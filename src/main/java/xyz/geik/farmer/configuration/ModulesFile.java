@@ -8,6 +8,7 @@ import xyz.geik.glib.shades.okaeri.configs.annotation.Comment;
 import xyz.geik.glib.shades.okaeri.configs.annotation.NameStrategy;
 import xyz.geik.glib.shades.okaeri.configs.annotation.Names;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,6 +117,9 @@ public class ModulesFile extends OkaeriConfig {
         @Comment({"if you want to use geyser module",
                 "set feature to true."})
         private boolean status = false;
+
+        @Comment({"Sell-all Args"})
+        private List<String> sellAllCommands = Arrays.asList("all", "whole", "hepsi");
     }
 
     @Comment("Spawner Killer Module")
@@ -191,7 +195,7 @@ public class ModulesFile extends OkaeriConfig {
                 "write the items you want to calculate",
                 "write the items in the items.yml file with same name",
                 "you can also remove this section, and it will calculate all items in the items.yml file"})
-        private List<String> items = Arrays.asList("CACTUS");
+        private List<String> items = new ArrayList<>();
     }
 
     @Comment("Auto Seller Module")
@@ -226,7 +230,7 @@ public class ModulesFile extends OkaeriConfig {
                 "you can add as many items as you want",
                 "the items must be same as the ones in the items.yml of the Farmer",
                 "you can also remove this section for enable it to all items"})
-        private List<String> items = Arrays.asList("PUMPKIN", "MELON", "WHEAT", "CACTUS");
+        private List<String> items = new ArrayList<>();
     }
 
     /**
