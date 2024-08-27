@@ -74,7 +74,7 @@ public class TownyListener implements Listener {
         String townID = e.getTown().getUUID().toString();
         if (!FarmerManager.getFarmers().containsKey(townID))
             return;
-        UUID member = e.getResident().getPlayer().getUniqueId();
+        UUID member = e.getResident().getUUID();
         Farmer farmer = FarmerManager.getFarmers().get(townID);
         if (farmer.getUsers().stream().noneMatch(user -> user.getUuid().equals(member)))
             farmer.addUser(member, Bukkit.getOfflinePlayer(member).getName(), FarmerPerm.COOP);

@@ -58,34 +58,37 @@ public class UsersGui {
         gui.addElement(GuiHelper.createNextPage(player));
         // Previous page item
         gui.addElement(GuiHelper.createPreviousPage(player));
+        boolean disableManualMemberAddRemove = Main.getConfigFile().getSettings().isDisableManualMemberAddRemove();
         // Add user icon
-        gui.addElement(new StaticGuiElement('a',
-                // Adduser item
-                GuiHelper.getAddUserItem(player),
-                1,
-                // Click event of item
-                click -> {
-                    // Checks if owner can add more user to farmer
-                    if (User.getUserAmount(player) <= farmer.getUsers().size()) {
-                        ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getReachedMaxUser());
-                        return true;
-                    }
-                    // Adding player to a list for catching with ChatEvent
-                    if (!ChatEvent.getPlayers().containsKey(player.getName()))
-                        ChatEvent.getPlayers().put(player.getName(), farmer.getRegionID());
-                    ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getWaitingInput(),
-                            new Placeholder("{cancel}", Main.getLangFile().getVarious().getInputCancelWord()));
-                    // Removes player from cache of ChatEvent catcher after 6 seconds
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                        if (ChatEvent.getPlayers().containsKey(player.getName())) {
-                            ChatEvent.getPlayers().remove(player.getName());
-                            ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getInputCancel());
+        if (!disableManualMemberAddRemove) {
+            gui.addElement(new StaticGuiElement('a',
+                    // Adduser item
+                    GuiHelper.getAddUserItem(player),
+                    1,
+                    // Click event of item
+                    click -> {
+                        // Checks if owner can add more user to farmer
+                        if (User.getUserAmount(player) <= farmer.getUsers().size()) {
+                            ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getReachedMaxUser());
+                            return true;
                         }
-                    }, 120L);
-                    gui.close();
-                    return true;
-                })
-        );
+                        // Adding player to a list for catching with ChatEvent
+                        if (!ChatEvent.getPlayers().containsKey(player.getName()))
+                            ChatEvent.getPlayers().put(player.getName(), farmer.getRegionID());
+                        ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getWaitingInput(),
+                                new Placeholder("{cancel}", Main.getLangFile().getVarious().getInputCancelWord()));
+                        // Removes player from cache of ChatEvent catcher after 6 seconds
+                        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                            if (ChatEvent.getPlayers().containsKey(player.getName())) {
+                                ChatEvent.getPlayers().remove(player.getName());
+                                ChatUtils.sendMessage(player, Main.getLangFile().getMessages().getInputCancel());
+                            }
+                        }, 120L);
+                        gui.close();
+                        return true;
+                    })
+            );
+        }
         // User list group items
         List<User> users = new ArrayList<>(farmer.getUsers());
         // Sorts users by permissions from largest to smallest
@@ -107,7 +110,7 @@ public class UsersGui {
                         if (click.getType().equals(ClickType.LEFT) || click.getType().equals(ClickType.RIGHT))
                             response = User.updateUserRole(user, farmer);
                         // Shift right click for remove user
-                        else if (click.getType().equals(ClickType.SHIFT_RIGHT)) {
+                        else if (click.getType().equals(ClickType.SHIFT_RIGHT) && !disableManualMemberAddRemove) {
                             response = farmer.removeUser(user);
                             if (response) {
                                 gui.destroy();

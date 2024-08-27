@@ -65,6 +65,9 @@ public class ConfigFile extends OkaeriConfig {
 
         @Comment("Default role which will be assigned to joined player (Options: COOP - MEMBER)")
         private String defaultJoinRole = "COOP";
+
+        @Comment({"Disables add and remove buttons in user management gui", "Useful for integrations which has automatic member add/remove events"})
+        private boolean disableManualMemberAddRemove = false;
     }
 
     /**
